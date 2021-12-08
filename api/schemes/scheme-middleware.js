@@ -1,5 +1,6 @@
 const db = require('../../data/db-config')
 const Scheme = require('./scheme-model')
+const {schemeSchema, stepsSchema} = require('./schema')
 
 
 
@@ -54,9 +55,20 @@ const checkSchemeId = async (req, res, next) => {
     "message": "invalid scheme_name"
   }
 */
-const validateScheme = (req, res, next) => {
 
+async function validateScheme(req, res, next) {
+  try {
+    const validated = await schemeSchema.validate(
+      req.body,
+      { strict: false, stripUnknown: true }
+    )
+    req.body = validated
+    next();
+  } catch (err) {
+    next({ message: `invalid scheme_name`, status: 400 });
+  }
 }
+
 
 /*
   If `instructions` is missing, empty string or not a string, or
@@ -67,8 +79,17 @@ const validateScheme = (req, res, next) => {
     "message": "invalid step"
   }
 */
-const validateStep = (req, res, next) => {
-
+async function validateStep(req, res, next) {
+  try {
+    const validated = await stepsSchema.validate(
+      req.body,
+      { strict: false, stripUnknown: true }
+    )
+    req.body = validated
+    next();
+  } catch (err) {
+    next({ message: `invalid step`, status: 400 });
+  }
 }
 
 module.exports = {
