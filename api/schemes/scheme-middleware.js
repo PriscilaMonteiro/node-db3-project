@@ -14,18 +14,35 @@ const Scheme = require('./scheme-model')
 */
 
 
-async function checkSchemeId (req, res, next) {
-  try{
-    const { scheme_id } = req.params
-    const scheme = await Scheme.findById(scheme_id)
-    if(scheme){
-      req.scheme = scheme
-      next()
+// async function checkSchemeId (req, res, next) {
+//   try{
+//     const { scheme_id } = req.params
+//     const scheme = await Scheme.findById(scheme_id)
+//     if(scheme){
+//       req.scheme = scheme
+//       next()
+//     } else {
+//       next({ status:404, message: `scheme with scheme_id ${scheme_id} not found`})
+//     }
+//   } catch (err) {
+//     next(err);
+//   }
+// }
+const checkSchemeId = async (req, res, next) => {
+  try {
+    const existing = await db('schemes')
+      .where('scheme_id', req.params.scheme_id)
+      .first()
+    if(!existing) {
+      next({
+        status:404,
+        message:`scheme with scheme_id ${req.params.scheme_id} not found`,
+      })
     } else {
-      next({ status:404, message: `scheme with scheme_id ${scheme_id} not found`})
+      next()
     }
   } catch (err) {
-    next(err);
+    next(err)
   }
 }
 
