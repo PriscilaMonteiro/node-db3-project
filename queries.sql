@@ -29,6 +29,7 @@ from Orderdetail as o
 Join product as P
 on o.ProductId=P.id
 where o.id like '%10251%'
+order by productname
 ;
 
 -- Display the OrderID, Customer's Company Name and the employee's LastName for every order. All columns should be labeled clearly. Displays 16,789 records.
