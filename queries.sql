@@ -69,6 +69,20 @@ Limit 5
 
 
 -- Find the top 5 best performing employees measured in revenue.
+--Per steps, first I got total price from each order, then I added employee and I cant think of how can I get the sum of total_price grouped by employee 🚨
+
+select
+Orderid, 
+round(sum(o.UnitPrice * o.Quantity * (1 - o.Discount)), 2) as total_price,
+firstname || ' ' || lastname as employee
+from [order]
+JOIN employee as E
+on [order].employeeid=E.Id
+JOIN orderdetail as o
+on [order].id=o.Orderid
+group by orderid
+order by orderid
+;
 
 
 -- Find the category that brings in the least revenue.
@@ -77,4 +91,18 @@ Limit 5
 -- Find the customer country with the most orders.
 
 
--- Find the shipper that moves the most cheese measured in units.
+-- Find the shipper that moves the most cheese measured in units. Not sure but I think Speedy got 902230.5; United got 892587 and Federal got 929553.5
+
+select 
+Orderid,
+ShipVia,
+CompanyName,
+round(sum(Freight),2) as total_Freight
+from orderdetail as o
+join [order]
+on o.orderid=[order].id
+join shipper as s
+on [order].shipVia=s.id
+where productid = 4
+group by ShipVia
+;
